@@ -1,4 +1,5 @@
 import { User } from '../models/User.js';
+import { evaluateAccountAccess } from '../utils/accountStatus.js';
 import { AppError } from '../utils/AppError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { verifyAccessToken } from '../utils/tokenUtils.js';
@@ -37,6 +38,17 @@ export const protect = asyncHandler(async (req, _res, next) => {
     throw new AppError('User account no longer exists.', 401);
   }
 
+  const access = evaluateAccountAccess(user);
+  if (!access.allowed) {
+    throw new AppError(access.message, 403);
+  }
+  if (access.autoRestored) {
+    user.status = 'active';
+    user.suspendedUntil = null;
+    user.moderationReason = '';
+    await user.save();
+  }
+
   req.user = user;
   next();
 });
@@ -53,7 +65,16 @@ export const optionalAuth = asyncHandler(async (req, _res, next) => {
     const decoded = verifyAccessToken(token);
     const user = await User.findById(decoded.sub).select('-passwordHash');
     if (user) {
-      req.user = user;
+      const access = evaluateAccountAccess(user);
+      if (access.allowed) {
+        if (access.autoRestored) {
+          user.status = 'active';
+          user.suspendedUntil = null;
+          user.moderationReason = '';
+          await user.save();
+        }
+        req.user = user;
+      }
     }
   } catch {
     // Ignore expired optional tokens so public endpoints remain accessible

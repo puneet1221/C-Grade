@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import { authApi } from '../api/authApi.js';
 import { usersApi } from '../api/domainApis.js';
 import { moviesApi } from '../api/moviesApi.js';
+import { PasswordInput } from '../components/ui/PasswordInput.jsx';
 import { useAuth } from '../hooks/useAuth.js';
 import { useDebounce } from '../hooks/useDebounce.js';
 
@@ -211,9 +212,9 @@ export function SettingsPage() {
             <label htmlFor="curr-pw" className="mb-1.5 block text-xs font-medium text-zinc-400">
               Current Password
             </label>
-            <input
+            <PasswordInput
               id="curr-pw"
-              type="password"
+              autoComplete="current-password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               className="w-full rounded-lg border border-white/10 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-100 focus:border-amber-500/60 focus:outline-none"
@@ -223,9 +224,9 @@ export function SettingsPage() {
             <label htmlFor="new-pw" className="mb-1.5 block text-xs font-medium text-zinc-400">
               New Password (min 8 chars)
             </label>
-            <input
+            <PasswordInput
               id="new-pw"
-              type="password"
+              autoComplete="new-password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               className="w-full rounded-lg border border-white/10 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-100 focus:border-amber-500/60 focus:outline-none"

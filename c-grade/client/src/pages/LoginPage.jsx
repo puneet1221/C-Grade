@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { PasswordInput } from '../components/ui/PasswordInput.jsx';
 import { useAuth } from '../hooks/useAuth.js';
 import { loginFormSchema } from '../utils/validators.js';
 
@@ -74,9 +75,8 @@ export function LoginPage() {
                 Forgot password?
               </Link>
             </div>
-            <input
+            <PasswordInput
               id="login-password"
-              type="password"
               autoComplete="current-password"
               {...register('password')}
               className="w-full rounded-lg border border-white/10 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-100 focus:border-amber-500/60 focus:outline-none"

@@ -50,6 +50,22 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    status: {
+      type: String,
+      enum: ['active', 'suspended', 'blocked'],
+      default: 'active',
+      index: true,
+    },
+    suspendedUntil: {
+      type: Date,
+      default: null,
+    },
+    moderationReason: {
+      type: String,
+      default: '',
+      trim: true,
+      maxlength: 300,
+    },
     favoriteMovies: {
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }],
       validate: {

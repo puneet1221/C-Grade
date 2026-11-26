@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import { authApi } from '../api/authApi.js';
+import { PasswordInput } from '../components/ui/PasswordInput.jsx';
 import { resetPasswordFormSchema } from '../utils/validators.js';
 
 /**
@@ -46,9 +47,9 @@ export function ResetPasswordPage() {
             <label htmlFor="rp-pw" className="mb-1.5 block text-xs font-medium text-zinc-400">
               New Password
             </label>
-            <input
+            <PasswordInput
               id="rp-pw"
-              type="password"
+              autoComplete="new-password"
               {...register('password')}
               className="w-full rounded-lg border border-white/10 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-100 focus:border-amber-500/60 focus:outline-none"
             />
@@ -59,9 +60,9 @@ export function ResetPasswordPage() {
             <label htmlFor="rp-confirm" className="mb-1.5 block text-xs font-medium text-zinc-400">
               Confirm Password
             </label>
-            <input
+            <PasswordInput
               id="rp-confirm"
-              type="password"
+              autoComplete="new-password"
               {...register('confirmPassword')}
               className="w-full rounded-lg border border-white/10 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-100 focus:border-amber-500/60 focus:outline-none"
             />

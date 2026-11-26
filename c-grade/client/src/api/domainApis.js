@@ -27,4 +27,9 @@ export const adminApi = {
   reports: () => axiosClient.get('/admin/reports').then((r) => r.data),
   moderateReview: (reviewId, action) =>
     axiosClient.patch(`/admin/reviews/${reviewId}/moderate`, { action }).then((r) => r.data),
+  users: (params) => axiosClient.get('/admin/users', { params }).then((r) => r.data),
+  createUser: (payload) => axiosClient.post('/admin/users', payload).then((r) => r.data),
+  updateUserStatus: (userId, payload) =>
+    axiosClient.patch(`/admin/users/${userId}/status`, payload).then((r) => r.data),
+  deleteUser: (userId) => axiosClient.delete(`/admin/users/${userId}`).then((r) => r.data),
 };

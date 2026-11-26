@@ -6,6 +6,7 @@ import {
 } from '../config/mailer.js';
 import { PendingRegistration } from '../models/PendingRegistration.js';
 import { User } from '../models/User.js';
+import { evaluateAccountAccess } from '../utils/accountStatus.js';
 import { AppError } from '../utils/AppError.js';
 import {
   createEmailVerificationOtp,
@@ -241,6 +242,16 @@ export async function loginUser({ identifier, password, rememberMe = false }) {
     throw new AppError('Invalid credentials. Please check your email/username and password.', 401);
   }
 
+  const access = evaluateAccountAccess(user);
+  if (!access.allowed) {
+    throw new AppError(access.message, 403);
+  }
+  if (access.autoRestored) {
+    user.status = 'active';
+    user.suspendedUntil = null;
+    user.moderationReason = '';
+  }
+
   const accessToken = signAccessToken({ id: user._id.toString(), role: user.role, username: user.username });
   const refreshToken = signRefreshToken({ id: user._id.toString(), rememberMe });
 
@@ -276,6 +287,18 @@ export async function refreshSession(rawRefreshToken) {
     user.refreshTokenHash = null;
     await user.save();
     throw new AppError('Refresh token mismatch. Please sign in again.', 401);
+  }
+
+  const access = evaluateAccountAccess(user);
+  if (!access.allowed) {
+    user.refreshTokenHash = null;
+    await user.save();
+    throw new AppError(access.message, 403);
+  }
+  if (access.autoRestored) {
+    user.status = 'active';
+    user.suspendedUntil = null;
+    user.moderationReason = '';
   }
 
   const rememberMe = Boolean(decoded.rememberMe);
