@@ -15,7 +15,6 @@ export const registerFormSchema = z.object({
     .regex(/^[a-z0-9_]{3,24}$/, '3-24 lowercase letters, numbers, or underscores'),
   email: z.string().trim().email('Enter a valid email address'),
   password: z.string().min(8, 'Password must be at least 8 characters').max(128),
-  avatarUrl: z.string().trim().optional().default(''),
 });
 
 export const verifyEmailFormSchema = z.object({

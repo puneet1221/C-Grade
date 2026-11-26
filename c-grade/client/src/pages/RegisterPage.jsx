@@ -28,7 +28,7 @@ export function RegisterPage() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(registerFormSchema),
-    defaultValues: { name: '', username: '', email: '', password: '', avatarUrl: '' },
+    defaultValues: { name: '', username: '', email: '', password: '' },
   });
 
   const {
@@ -254,22 +254,6 @@ export function RegisterPage() {
                 {errors.password && (
                   <p className="mt-1 text-xs text-rose-400">{errors.password.message}</p>
                 )}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="reg-avatar"
-                  className="mb-1.5 block text-xs font-medium text-zinc-400"
-                >
-                  Avatar URL (optional)
-                </label>
-                <input
-                  id="reg-avatar"
-                  type="url"
-                  {...register('avatarUrl')}
-                  placeholder="https://..."
-                  className="w-full rounded-lg border border-white/10 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-100 focus:border-amber-500/60 focus:outline-none"
-                />
               </div>
 
               <button

@@ -125,7 +125,7 @@ export const getSession = asyncHandler(async (req, res) => {
 
 /**
  * POST /api/v1/auth/forgot-password
- * Sends a 15-minute reset link via Gmail SMTP while preventing user enumeration.
+ * Verifies the email exists in the database before sending a 15-minute reset link via Gmail SMTP.
  */
 export const forgotPassword = asyncHandler(async (req, res) => {
   const origin = req.headers.origin || env.APP_URL || env.CLIENT_URL;
@@ -133,7 +133,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
   return sendSuccess(
     res,
     200,
-    'If an account matches that email, a password reset link has been sent (valid for 15 minutes).'
+    'Password reset link sent to your registered email (valid for 15 minutes).'
   );
 });
 

@@ -12,6 +12,7 @@ import { forgotPasswordFormSchema } from '../utils/validators.js';
 export function ForgotPasswordPage() {
   const [sent, setSent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [serverError, setServerError] = useState('');
 
   const {
     register,
@@ -23,12 +24,15 @@ export function ForgotPasswordPage() {
 
   async function onSubmit(values) {
     setSubmitting(true);
+    setServerError('');
     try {
       const res = await authApi.forgotPassword(values);
       toast.success(res.message);
       setSent(true);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Unable to process request');
+      const msg = err.response?.data?.message || 'Unable to process request';
+      setServerError(msg);
+      toast.error(msg);
     } finally {
       setSubmitting(false);
     }
@@ -39,7 +43,7 @@ export function ForgotPasswordPage() {
       <div className="rounded-2xl border border-white/10 bg-zinc-900/60 p-7 shadow-2xl">
         <h1 className="font-display text-2xl font-bold text-zinc-50">Forgot Password</h1>
         <p className="mt-1.5 text-sm text-zinc-400">
-          Enter your account email and we will send a 15-minute reset link.
+          Enter your registered account email and we will send a 15-minute reset link.
         </p>
 
         {sent ? (
@@ -48,6 +52,21 @@ export function ForgotPasswordPage() {
           </div>
         ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
+            {serverError && (
+              <div
+                role="alert"
+                className="rounded-xl border border-rose-500/30 bg-rose-500/10 px-3.5 py-3 text-xs text-rose-200"
+              >
+                <p>{serverError}</p>
+                <p className="mt-1 text-zinc-300">
+                  Need an account?{' '}
+                  <Link to="/register" className="font-semibold text-amber-400 hover:text-amber-300">
+                    Sign up here
+                  </Link>
+                </p>
+              </div>
+            )}
+
             <div>
               <label htmlFor="fp-email" className="mb-1.5 block text-xs font-medium text-zinc-400">
                 Email Address
@@ -55,7 +74,11 @@ export function ForgotPasswordPage() {
               <input
                 id="fp-email"
                 type="email"
-                {...register('email')}
+                {...register('email', {
+                  onChange: () => {
+                    if (serverError) setServerError('');
+                  },
+                })}
                 className="w-full rounded-lg border border-white/10 bg-zinc-950 px-3.5 py-2.5 text-sm text-zinc-100 focus:border-amber-500/60 focus:outline-none"
               />
               {errors.email && <p className="mt-1 text-xs text-rose-400">{errors.email.message}</p>}
@@ -66,7 +89,7 @@ export function ForgotPasswordPage() {
               disabled={submitting}
               className="w-full rounded-lg bg-amber-500 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-amber-400 disabled:opacity-50"
             >
-              {submitting ? 'Sending...' : 'Send Reset Link'}
+              {submitting ? 'Checking...' : 'Send Reset Link'}
             </button>
           </form>
         )}

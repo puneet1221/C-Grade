@@ -302,13 +302,14 @@ export async function logoutUser(rawRefreshToken) {
 }
 
 /**
- * Generates a 15-minute SHA-256 hashed password reset token and sends a Gmail SMTP email.
- * Always resolves gracefully to avoid user enumeration.
+ * Searches the database for a registered user by email first; if found, generates
+ * a 15-minute SHA-256 hashed password reset token and sends a Gmail SMTP email.
  */
 export async function requestPasswordReset({ email, clientBaseUrl }) {
-  const user = await User.findOne({ email: email.toLowerCase() });
+  const normalizedEmail = String(email || '').trim().toLowerCase();
+  const user = await User.findOne({ email: normalizedEmail });
   if (!user) {
-    return { dispatched: true };
+    throw new AppError('User is not registered with this email address.', 404);
   }
 
   const { rawToken, tokenHash, expiresAt } = createPasswordResetToken();
