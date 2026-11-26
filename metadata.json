@@ -1,0 +1,8 @@
+{
+  "name": "C-Grade",
+  "description": "Editorial cinema rating, review, and film discovery platform.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
